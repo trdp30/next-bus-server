@@ -1,47 +1,43 @@
 const Restaurant = require("../models/restaurant");
 const asyncHandler = require("express-async-handler");
 
-// Display list of all Restaurants.
-
+// Display list of all Restaurants on GET.
 exports.restaurant_list = asyncHandler(async (req, res, next) => {
   const model = await Restaurant.find().exec();
   res.status(200).json(model);
 });
 
-// Display detail page for a specific Restaurant.
-exports.restaurant_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Restaurant detail: ${req.params.id}`);
-});
-
-// Display Restaurant create form on GET.
-exports.restaurant_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Restaurant create GET");
-});
-
 // Handle Restaurant create on POST.
 exports.restaurant_create_post = asyncHandler(async (req, res, next) => {
   const model = new Restaurant(req.body);
+  model.set("created_by", req.decodedToken.user_id);
   const response = await model.save();
   await model.save();
   res.status(201).json(response);
 });
 
-// Display Restaurant delete form on GET.
-exports.restaurant_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Restaurant delete GET");
+// Display detail page for a specific Restaurant on GET.
+exports.restaurant_detail = asyncHandler(async (req, res, next) => {
+  const model = await Restaurant.findById(req.params.id).exec();
+  if (model) {
+    res.status(200).send(model);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
-// Handle Restaurant delete on POST.
-exports.restaurant_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Restaurant delete POST");
+// Handle Restaurant update on PUT.
+exports.restaurant_update_put = asyncHandler(async (req, res, next) => {
+  await Restaurant.findByIdAndUpdate(req.params.id, {
+    ...req.body,
+    updated_by: req?.decodedToken?.user_id
+  }).exec();
+  const model = await Restaurant.findById(req.params.id).exec();
+  res.status(200).send(model);
 });
 
-// Display Restaurant update form on GET.
-exports.restaurant_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Restaurant update GET");
-});
-
-// Handle Restaurant update on POST.
-exports.restaurant_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Restaurant update POST");
+// Handle Restaurant delete on DELETE.
+exports.restaurant_delete = asyncHandler(async (req, res, next) => {
+  await Restaurant.findByIdAndDelete(req.params.id).exec();
+  res.sendStatus(204);
 });

@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var indexRouter = require("./routes/index");
 var restaurantRouter = require("./routes/restaurant");
+const authentication = require("./middlewares/authentication");
 
 var app = express();
 
@@ -20,7 +21,7 @@ app.set("view engine", "hbs");
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -31,9 +32,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/restaurant", restaurantRouter);
+app.use("/", authentication, indexRouter);
+app.use("/users", authentication, usersRouter);
+app.use("/restaurant", authentication, restaurantRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
