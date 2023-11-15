@@ -33,8 +33,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authentication, indexRouter);
-app.use("/users", authentication, usersRouter);
-app.use("/restaurant", authentication, restaurantRouter);
+app.use("/v1/users", authentication, usersRouter);
+app.use("/v1/restaurant", authentication, restaurantRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
