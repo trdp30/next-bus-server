@@ -30,7 +30,7 @@ exports.restaurant_detail = asyncHandler(async (req, res) => {
 exports.restaurant_update_put = asyncHandler(async (req, res) => {
   await Restaurant.findByIdAndUpdate(req.params.id, {
     ...req.body,
-    updated_by: req?.decodedToken?.user_id
+    updated_by: req?.decodedToken?.user_id,
   }).exec();
   const model = await Restaurant.findById(req.params.id).exec();
   res.status(200).send(model);

@@ -17,11 +17,11 @@ const RestaurantModelSchema = new Schema(
     pin_code: Number,
     location: Object,
     created_by: { type: String, default: 1 },
-    updated_by: { type: String, default: 1 }
+    updated_by: { type: String, default: 1 },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 module.exports = mongoose.model("restaurant", RestaurantModelSchema);

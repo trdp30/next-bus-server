@@ -59,5 +59,5 @@ module.exports = {
   getUserById,
   updateUserById,
   updateUserRoleById,
-  getFirebaseUserList
+  getFirebaseUserList,
 };

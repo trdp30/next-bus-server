@@ -2,7 +2,6 @@
 
 const { firebaseAuth } = require("../config/firebase");
 const User = require("../schemas/user");
-const { find } = require("lodash");
 const validateRoles = require("../utils/validatedRole");
 
 const createUser = async ({ payload, session }) => {
@@ -15,10 +14,13 @@ const createUser = async ({ payload, session }) => {
     password: password,
     displayName: name,
     // photoURL: profile_pic || null,
-    disabled: false
+    disabled: false,
   });
 
-  await firebaseAuth.setCustomUserClaims(response.uid, { roles: roles, organization_id });
+  await firebaseAuth.setCustomUserClaims(response.uid, {
+    roles: roles,
+    organization_id,
+  });
 
   const newUser = new User({
     email,
@@ -29,7 +31,7 @@ const createUser = async ({ payload, session }) => {
     created_by: session.uid,
     phone: (phone || "").toString(),
     name,
-    profile_pic
+    profile_pic,
   });
 
   const model = await newUser.save();
@@ -70,5 +72,5 @@ module.exports = {
   getUserById,
   updateUserById,
   updateUserRoleById,
-  getFirebaseUserList
+  getFirebaseUserList,
 };

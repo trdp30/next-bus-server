@@ -7,39 +7,39 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
     organization_id: {
       type: String,
-      required: true
+      required: true,
     },
     profile_pic: {
       type: String,
-      default: ""
+      default: "",
     },
     roles: {
       type: Array,
-      default: []
+      default: [],
     },
     uid: {
       type: String,
-      required: true
+      required: true,
     },
     created_by: {
       type: String,
-      required: true
+      required: true,
     },
     phone: {
       type: String,
-      default: ""
+      default: "",
     },
     name: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 const User = mongoose.model("User", userSchema);

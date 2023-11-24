@@ -22,12 +22,7 @@ const checkSuperAdminAccess = async (req, res, next) => {
 const authAdminAccess = async (req, res, next) => {
   try {
     const decodedToken = req.decodedToken;
-    if (
-      decodedToken &&
-      decodedToken.roles &&
-      decodedToken.roles.length &&
-      includes(decodedToken.roles, roles.admin)
-    ) {
+    if (decodedToken && decodedToken.roles && decodedToken.roles.length && includes(decodedToken.roles, roles.admin)) {
       next();
     } else {
       return res.status(401).send({ error: "Authorization denied" });
@@ -40,12 +35,7 @@ const authAdminAccess = async (req, res, next) => {
 const authOwnerAccess = async (req, res, next) => {
   try {
     const decodedToken = req.decodedToken;
-    if (
-      decodedToken &&
-      decodedToken.roles &&
-      decodedToken.roles.length &&
-      includes(decodedToken.roles, roles.owner)
-    ) {
+    if (decodedToken && decodedToken.roles && decodedToken.roles.length && includes(decodedToken.roles, roles.owner)) {
       next();
     } else {
       return res.status(401).send({ error: "Authorization denied" });
@@ -77,5 +67,5 @@ module.exports = {
   checkSuperAdminAccess,
   authAdminAccess,
   authOwnerAccess,
-  authManagerAccess
+  authManagerAccess,
 };
