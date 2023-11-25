@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const MenuItemModel = require("../models/menuItem");
+const RestaurantModel = require("../models/restaurant");
 
 const createMenuItem = asyncHandler(async (req, res) => {
   const payload = req.body;
@@ -7,6 +8,13 @@ const createMenuItem = asyncHandler(async (req, res) => {
 
   if (!Object.keys(payload).length) {
     return res.status(400).json({ error: "Empty payload" });
+  }
+
+  const restaurantId = payload.restaurant_id;
+
+  const restaurant = await RestaurantModel.findById(restaurantId);
+  if (!restaurant && !restaurant?._id) {
+    return res.status(400).json({ error: "Restaurant not found" });
   }
 
   const model = await MenuItemModel.createMenuItem({ payload, session });
@@ -55,10 +63,20 @@ const deleteMenuItem = asyncHandler(async (req, res) => {
   res.sendStatus(204);
 });
 
+const deleteAllMenuItemByResId = asyncHandler(async (req, res) => {
+  const restaurantId = req.params.restaurant_id;
+  if (!restaurantId) {
+    return res.status(400).json({ error: "Missing param: restaurantId" });
+  }
+  await MenuItemModel.deleteAllMenuItemByResId({ restaurantId });
+  res.sendStatus(204);
+});
+
 module.exports = {
   createMenuItem,
   getMenuItems,
   getMenuItemById,
   updateMenuItem,
   deleteMenuItem,
+  deleteAllMenuItemByResId,
 };

@@ -30,10 +30,15 @@ const deleteMenuItem = async ({ menuItemId }) => {
   return MenuItem.findByIdAndDelete(menuItemId).exec();
 };
 
+const deleteAllMenuItemByResId = async ({ restaurantId }) => {
+  return MenuItem.deleteMany({ restaurant_id: restaurantId }).exec();
+};
+
 module.exports = {
   createMenuItem,
   getMenuItems,
   updateMenuItem,
   deleteMenuItem,
   getMenuItemById,
+  deleteAllMenuItemByResId,
 };

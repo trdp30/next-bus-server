@@ -1,5 +1,6 @@
 const Restaurant = require("../models/restaurant");
 const asyncHandler = require("express-async-handler");
+const MenuItem = require("../models/menuItem");
 
 // Display list of all Restaurants on GET.
 exports.restaurant_list = asyncHandler(async (req, res) => {
@@ -36,8 +37,12 @@ exports.restaurant_update_put = asyncHandler(async (req, res) => {
   res.status(200).send(model);
 });
 
-// Handle Restaurant delete on DELETE.
 exports.restaurant_delete = asyncHandler(async (req, res) => {
-  await Restaurant.findByIdAndDelete(req.params.id).exec();
+  const restaurantId = req.params.id;
+  if (!restaurantId || restaurantId === "undefined") {
+    return res.status(400).json({ error: "Missing param: restaurantId" });
+  }
+  await MenuItem.deleteAllMenuItemByResId({ restaurantId });
+  await Restaurant.findByIdAndDelete(restaurantId).exec();
   res.sendStatus(204);
 });
