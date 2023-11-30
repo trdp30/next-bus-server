@@ -2,10 +2,23 @@
 
 const { firebaseAuth } = require("../config/firebase");
 const User = require("../schemas/user");
+const rolesEnum = require("../utils/roles");
 const validateRoles = require("../utils/validatedRole");
 
+const getMappedRoles = role => {
+  if (role === rolesEnum.admin) {
+    return [rolesEnum.admin, rolesEnum.areaManager, rolesEnum.owner, rolesEnum.manager];
+  } else if (role === rolesEnum.areaManager) {
+    return [rolesEnum.areaManager, rolesEnum.owner, rolesEnum.manager];
+  } else if (role === rolesEnum.owner) {
+    return [rolesEnum.owner, rolesEnum.manager];
+  } else if (role === rolesEnum.manager) {
+    return [rolesEnum.manager];
+  }
+};
+
 const createUser = async ({ payload, session }) => {
-  const { email, phone, name, password, organization_id, profile_pic, roles } = payload;
+  const { email, phone, name, password, organization_id, profile_pic, role } = payload;
 
   const response = await firebaseAuth.createUser({
     email: email,
@@ -16,6 +29,8 @@ const createUser = async ({ payload, session }) => {
     // photoURL: profile_pic || null,
     disabled: false,
   });
+
+  const roles = getMappedRoles(role);
 
   await firebaseAuth.setCustomUserClaims(response.uid, {
     roles: roles,
@@ -31,7 +46,6 @@ const createUser = async ({ payload, session }) => {
     created_by: session.uid,
     phone: (phone || "").toString(),
     name,
-    profile_pic,
   });
 
   const model = await newUser.save();
@@ -53,11 +67,15 @@ const updateUserById = async ({ uid, payload }) => {
 };
 
 const updateUserRoleById = async ({ uid, payload }) => {
-  const roles = payload?.roles;
+  const roles = getMappedRoles(payload?.role);
   const isValidPayload = validateRoles(roles);
   if (!isValidPayload) {
     throw Error("Invalid roles");
   }
+  if (payload.organization_id) {
+    await firebaseAuth.setCustomUserClaims(uid, { organization_id: payload.organization_id });
+  }
+
   await firebaseAuth.setCustomUserClaims(uid, { roles: roles });
   const model = await User.findOneAndUpdate({ uid }, { roles: roles });
   return model.save();
