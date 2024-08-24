@@ -1,23 +1,23 @@
 const mongoose = require("mongoose");
 
-const menuItemSchema = new mongoose.Schema(
+const vehicleSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    description: {
+    registration_number: {
       type: String,
       required: false,
       trim: true,
     },
-    mealType: {
+    chassis_number: {
       type: String,
       required: true,
       trim: true,
     },
-    price: {
+    engine_number: {
       type: Number,
       required: true,
       trim: true,
@@ -26,10 +26,10 @@ const menuItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    restaurant_id: {
-      type: String,
-      required: true,
-      trim: true,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Owner", // This references the 'Owner' model
+      required: true, // You can choose to make this required or not based on your needs
     },
   },
   {
@@ -37,6 +37,6 @@ const menuItemSchema = new mongoose.Schema(
   },
 );
 
-const MenuItem = mongoose.model("MenuItem", menuItemSchema);
+const Vehicle = mongoose.model("Vehicle", vehicleSchema);
 
-module.exports = MenuItem;
+module.exports = Vehicle;

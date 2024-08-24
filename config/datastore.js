@@ -1,7 +1,8 @@
 // const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoose = require("mongoose");
-const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.n5thpzs.mongodb.net/${process.env.DATABASE_NAME}?retryWrites=true&w=majority`;
-
+// const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@cluster0.n5thpzs.mongodb.net/${process.env.DATABASE_NAME}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@nextbuscluster0.ckre8mo.mongodb.net/${process.env.DATABASE_NAME}?retryWrites=true&w=majority&appName=nextBusCluster0";
+`;
 // // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // const client = new MongoClient(uri, {
 //   serverApi: {

@@ -7,9 +7,14 @@ var logger = require("morgan");
 const cors = require("cors");
 
 var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var menuItemRouter = require("./routes/menuItem");
-var restaurantRouter = require("./routes/restaurant");
+var assistantDriverRouter = require("./controllers/assistantDriver");
+var driverRouter = require("./controllers/driver");
+var handymanRouter = require("./controllers/handyman");
+var ownerRouter = require("./controllers/owner");
+var placeRouter = require("./controllers/place");
+var userRouter = require("./controllers/user");
+var vehicleRouter = require("./controllers/vehicle");
+
 const authentication = require("./middlewares/authentication");
 
 var app = express();
@@ -33,9 +38,13 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authentication, indexRouter);
-app.use("/v1/user", authentication, usersRouter);
-app.use("/v1/restaurant", authentication, restaurantRouter);
-app.use("/v1/menu-item", authentication, menuItemRouter);
+app.use("/v1/assistant-driver", authentication, assistantDriverRouter);
+app.use("/v1/driver", authentication, driverRouter);
+app.use("/v1/handyman", authentication, handymanRouter);
+app.use("/v1/owner", authentication, ownerRouter);
+app.use("/v1/place", authentication, placeRouter);
+app.use("/v1/user", authentication, userRouter);
+app.use("/v1/vehicle", authentication, vehicleRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
