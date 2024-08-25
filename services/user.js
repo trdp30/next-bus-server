@@ -61,7 +61,7 @@ const getUserById = async userId => {
   return model;
 };
 
-const getFirebaseUserById = async ({ uid }) => {
+const getFirebaseUserById = async uid => {
   return firebaseAuth.getUser(uid);
 };
 
