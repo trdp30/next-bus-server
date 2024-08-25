@@ -56,8 +56,8 @@ const createUser = async ({ payload, session }) => {
   return model;
 };
 
-const getUserById = async ({ uid }) => {
-  const model = await User.findOne({ uid });
+const getUserById = async userId => {
+  const model = await User.findById(userId);
   return model;
 };
 
