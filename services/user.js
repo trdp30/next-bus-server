@@ -103,11 +103,13 @@ const getAllUsers = async () => {
 // Delete a User
 const deleteUser = async userId => {
   try {
-    const user = await User.findByIdAndDelete(userId);
+    const user = await getUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
-    return user;
+    await firebaseAuth.deleteUser(user.uid);
+    const res = await User.findByIdAndDelete(userId);
+    return res;
   } catch (error) {
     throw new Error(`Error deleting user: ${error.message}`);
   }
@@ -125,15 +127,25 @@ const updateUser = async (userId, updateData) => {
       },
       isNil,
     );
-    const user = await User.findByIdAndUpdate(userId, payload, {
-      new: true,
-      runValidators: true,
-    });
-
+    const user = await getUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
-    return user;
+    const fbPayload = omitBy(
+      {
+        displayName: payload.name,
+      },
+      isNil,
+    );
+
+    if (Object.keys(fbPayload).length) {
+      await firebaseAuth.updateUser(user.uid, fbPayload);
+    }
+
+    return await User.findByIdAndUpdate(userId, payload, {
+      new: true,
+      runValidators: true,
+    });
   } catch (error) {
     throw new Error(`Error updating user: ${error.message}`);
   }
