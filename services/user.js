@@ -81,7 +81,8 @@ const updateUserRoleById = async ({ uid, payload }) => {
 
   await firebaseAuth.setCustomUserClaims(uid, { roles: roles });
   const model = await User.findOneAndUpdate({ uid }, { roles: roles });
-  return model.save();
+  await model.save();
+  return await User.findOne({ uid });
 };
 
 const getFirebaseUserList = async () => {
