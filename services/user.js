@@ -1,35 +1,113 @@
+const { firebaseAuth } = require("../config/firebase");
 const User = require("../models/user");
+const rolesEnum = require("../utils/roles");
+const validateRoles = require("../utils/validatedRole");
 
-// Create a User
-const createUser = async (email, organizationId, profilePic, roles, uid, createdBy, phone, name) => {
-  try {
-    const user = new User({
-      email,
-      organization_id: organizationId,
-      profile_pic: profilePic,
-      roles,
-      uid,
-      created_by: createdBy,
-      phone,
-      name,
-    });
-    await user.save();
-    return user;
-  } catch (error) {
-    throw new Error(`Error creating user: ${error.message}`);
+const getMappedRoles = role => {
+  if (role === rolesEnum.admin) {
+    return [rolesEnum.admin, rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+  } else if (role === rolesEnum.owner) {
+    return [rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+  } else if (role === rolesEnum.driver) {
+    return [rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+  } else if (role === rolesEnum.assistantDriver) {
+    return [rolesEnum.assistantDriver, rolesEnum.handyman];
+  } else if (role === rolesEnum.handyman) {
+    return [rolesEnum.handyman];
+  } else {
+    return [];
   }
 };
 
-// Get User by ID
-const getUserById = async userId => {
+const createUser = async ({ payload, session }) => {
+  const { email, phone, name, password, organization_id, profile_pic, role } = payload;
+
+  const response = await firebaseAuth.createUser({
+    email: email,
+    emailVerified: false,
+    // phoneNumber: (phone || "").toString(),
+    password: password,
+    displayName: name,
+    // photoURL: profile_pic || null,
+    disabled: false,
+  });
+
+  const roles = getMappedRoles(role);
+
+  await firebaseAuth.setCustomUserClaims(response.uid, {
+    roles: roles,
+    organization_id,
+  });
+
+  const newUser = new User({
+    email,
+    organization_id,
+    profile_pic,
+    uid: response.uid,
+    roles: roles,
+    created_by: session.uid,
+    phone: (phone || "").toString(),
+    name,
+  });
+
+  const model = await newUser.save();
+
+  return model;
+};
+
+const getUserById = async ({ uid }) => {
+  const model = await User.findOne({ uid });
+  return model;
+};
+
+const getFirebaseUserById = async ({ uid }) => {
+  return firebaseAuth.getUser(uid);
+};
+
+const updateUserById = async ({ uid, payload }) => {
+  const model = await User.findOneAndUpdate({ uid }, payload);
+  return model.save();
+};
+
+const updateUserRoleById = async ({ uid, payload }) => {
+  const roles = getMappedRoles(payload?.role);
+  const isValidPayload = validateRoles(roles);
+  if (!isValidPayload) {
+    throw Error("Invalid roles");
+  }
+  if (payload.organization_id) {
+    await firebaseAuth.setCustomUserClaims(uid, { organization_id: payload.organization_id });
+  }
+
+  await firebaseAuth.setCustomUserClaims(uid, { roles: roles });
+  const model = await User.findOneAndUpdate({ uid }, { roles: roles });
+  return model.save();
+};
+
+const getFirebaseUserList = async () => {
+  return await firebaseAuth.listUsers();
+};
+
+// Get All Users
+const getAllUsers = async () => {
   try {
-    const user = await User.findById(userId);
+    const users = await User.find();
+    return users;
+  } catch (error) {
+    throw new Error(`Error retrieving users: ${error.message}`);
+  }
+};
+
+// Delete a User
+const deleteUser = async userId => {
+  try {
+    const user = await User.findByIdAndDelete(userId);
     if (!user) {
       throw new Error("User not found");
     }
     return user;
   } catch (error) {
-    throw new Error(`Error retrieving user: ${error.message}`);
+    throw new Error(`Error deleting user: ${error.message}`);
   }
 };
 
@@ -50,33 +128,14 @@ const updateUser = async (userId, updateData) => {
   }
 };
 
-// Delete a User
-const deleteUser = async userId => {
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    return user;
-  } catch (error) {
-    throw new Error(`Error deleting user: ${error.message}`);
-  }
-};
-
-// Get All Users
-const getAllUsers = async () => {
-  try {
-    const users = await User.find();
-    return users;
-  } catch (error) {
-    throw new Error(`Error retrieving users: ${error.message}`);
-  }
-};
-
 module.exports = {
   createUser,
   getUserById,
-  updateUser,
-  deleteUser,
+  updateUserById,
+  updateUserRoleById,
+  getFirebaseUserList,
   getAllUsers,
+  deleteUser,
+  updateUser,
+  getFirebaseUserById,
 };

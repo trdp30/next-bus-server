@@ -7,6 +7,7 @@ var logger = require("morgan");
 const cors = require("cors");
 
 var indexRouter = require("./routes/index");
+var authRouter = require("./routes/auth");
 var assistantDriverRouter = require("./controllers/assistantDriver");
 var driverRouter = require("./controllers/driver");
 var handymanRouter = require("./controllers/handyman");
@@ -37,7 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", authentication, indexRouter);
+app.use("/", indexRouter);
+app.use("/v1/auth", authRouter);
 app.use("/v1/assistant-driver", authentication, assistantDriverRouter);
 app.use("/v1/driver", authentication, driverRouter);
 app.use("/v1/handyman", authentication, handymanRouter);
