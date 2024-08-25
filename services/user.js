@@ -1,3 +1,4 @@
+const { omitBy, isNil } = require("lodash");
 const { firebaseAuth } = require("../config/firebase");
 const User = require("../models/user");
 const rolesEnum = require("../utils/roles");
@@ -115,7 +116,16 @@ const deleteUser = async userId => {
 // Update a User
 const updateUser = async (userId, updateData) => {
   try {
-    const user = await User.findByIdAndUpdate(userId, updateData, {
+    const payload = omitBy(
+      {
+        organization_id: updateData.organization_id,
+        profile_pic: updateData.profile_pic,
+        phone: updateData.phone,
+        name: updateData.name,
+      },
+      isNil,
+    );
+    const user = await User.findByIdAndUpdate(userId, payload, {
       new: true,
       runValidators: true,
     });
