@@ -66,7 +66,7 @@ router.get("/:userId", authAdminAccess, async (req, res) => {
 // Update role of User
 router.put("/update-role/:id", checkSuperAdminAccess, async (req, res) => {
   try {
-    const updatedUser = await userService.updateUserRoleById({ uid: req.params.id, payload: req.body });
+    const updatedUser = await userService.updateUserRoleById({ userId: req.params.id, payload: req.body });
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(400).json({ message: error.message });

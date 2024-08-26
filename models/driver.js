@@ -13,6 +13,10 @@ const driverSchema = new mongoose.Schema(
         ref: "Vehicle", // This references the 'Vehicle' model
       },
     ],
+    pan: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

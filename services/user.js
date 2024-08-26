@@ -70,20 +70,24 @@ const updateUserById = async ({ uid, payload }) => {
   return model.save();
 };
 
-const updateUserRoleById = async ({ uid, payload }) => {
+const updateUserRoleById = async ({ userId, payload }) => {
   const roles = getMappedRoles(payload?.role);
   const isValidPayload = validateRoles(roles);
   if (!isValidPayload) {
     throw Error("Invalid roles");
   }
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
   if (payload.organization_id) {
-    await firebaseAuth.setCustomUserClaims(uid, { organization_id: payload.organization_id });
+    await firebaseAuth.setCustomUserClaims(user.uid, { organization_id: payload.organization_id });
   }
 
-  await firebaseAuth.setCustomUserClaims(uid, { roles: roles });
-  const model = await User.findOneAndUpdate({ uid }, { roles: roles });
+  await firebaseAuth.setCustomUserClaims(user.uid, { roles: roles });
+  const model = await User.findOneAndUpdate({ uid: user.uid }, { roles: roles });
   await model.save();
-  return await User.findOne({ uid });
+  return await User.findOne({ uid: user.uid });
 };
 
 const getFirebaseUserList = async () => {

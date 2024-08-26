@@ -17,6 +17,10 @@ const ownerSchema = new mongoose.Schema(
     location: {
       type: String, // Consider using a more specific geolocation type (e.g., GeoJSON)
     },
+    pan: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
