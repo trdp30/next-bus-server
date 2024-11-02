@@ -53,6 +53,16 @@ router.post("/", authAdminAccess, async (req, res) => {
   }
 });
 
+// Get current user by idToken's user_id
+router.get("/me", async (req, res) => {
+  try {
+    const currentUser = await userService.getUserByFBId(req?.decodedToken?.user_id);
+    res.status(200).json(currentUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // Get User by ID
 router.get("/:userId", authAdminAccess, async (req, res) => {
   try {

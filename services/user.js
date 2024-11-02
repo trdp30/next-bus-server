@@ -71,6 +71,11 @@ const getUserById = async userId => {
   return model;
 };
 
+const getUserByFBId = async fbUserId => {
+  const model = await User.findOne({ uid: fbUserId });
+  return model;
+};
+
 const getFirebaseUserById = async uid => {
   return firebaseAuth.getUser(uid);
 };
@@ -176,4 +181,5 @@ module.exports = {
   updateUser,
   getFirebaseUserById,
   getUserByEmail,
+  getUserByFBId,
 };
