@@ -5,18 +5,20 @@ const rolesEnum = require("../utils/roles");
 const validateRoles = require("../utils/validatedRole");
 
 const getMappedRoles = role => {
-  if (role === rolesEnum.admin) {
-    return [rolesEnum.admin, rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
-  } else if (role === rolesEnum.owner) {
-    return [rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
-  } else if (role === rolesEnum.driver) {
-    return [rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
-  } else if (role === rolesEnum.assistantDriver) {
-    return [rolesEnum.assistantDriver, rolesEnum.handyman];
-  } else if (role === rolesEnum.handyman) {
-    return [rolesEnum.handyman];
-  } else {
-    return [];
+  const parsedRole = (role || "").toLowerCase();
+  switch (parsedRole) {
+    case rolesEnum.admin.toLowerCase():
+      return [rolesEnum.admin, rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+    case rolesEnum.owner.toLowerCase():
+      return [rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+    case rolesEnum.driver.toLowerCase():
+      return [rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+    case rolesEnum.assistantDriver.toLowerCase():
+      return [rolesEnum.assistantDriver, rolesEnum.handyman];
+    case rolesEnum.handyman.toLowerCase():
+      return [rolesEnum.handyman];
+    default:
+      return [];
   }
 };
 
@@ -34,6 +36,9 @@ const createUser = async ({ payload, session }) => {
   });
 
   const roles = getMappedRoles(role);
+  // const roles = Object.keys(rolesEnum)
+  //   .map(k => rolesEnum[k])
+  //   .concat("SUPER_ADMIN");
 
   await firebaseAuth.setCustomUserClaims(response.uid, {
     roles: roles,
@@ -46,13 +51,18 @@ const createUser = async ({ payload, session }) => {
     profile_pic,
     uid: response.uid,
     roles: roles,
-    created_by: session.uid,
+    created_by: session?.uid || "self",
     phone: (phone || "").toString(),
     name,
   });
 
   const model = await newUser.save();
 
+  return model;
+};
+
+const getUserByEmail = async email => {
+  const model = await User.findOne({ email: email });
   return model;
 };
 
@@ -165,4 +175,5 @@ module.exports = {
   deleteUser,
   updateUser,
   getFirebaseUserById,
+  getUserByEmail,
 };

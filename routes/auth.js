@@ -1,19 +1,39 @@
 const express = require("express");
 const { firebaseAuth } = require("../config/firebase");
+const { signInWithEmailAndPassword } = require("firebase/auth");
+const { firebaseClientAuth } = require("../config/firebase-client");
 
 const router = express.Router();
 
+// export async function getAccessToken(
+//   username: string,
+//   password: string,
+//   tenant_id: string,
+// ): Promise<{ access_token: string; refresh_token: string; expires_in: number } | undefined> {
+//   try {
+//     const auth = getAuth(tenant_id);
+//     const { user }: UserCredential = await signInWithEmailAndPassword(auth, username, password);
+//     const { token: access_token, expirationTime } = await user.getIdTokenResult(true);
+//     const expires_in = new Date(expirationTime).getTime() / 1000;
+//     return {
+//       access_token,
+//       refresh_token: user.refreshToken,
+//       expires_in,
+//     };
+//   } catch (error) {
+//     handlerError(error);
+//   }
+// }
+
 // Sign in with email and password
-router.post("/signin", async (req, res) => {
+router.post("/token", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userCredential = await firebaseAuth.signInWithEmailAndPassword(email, password);
+    const userCredential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
     const user = userCredential.user;
+    const { token, expirationTime: expires_in } = await user.getIdTokenResult(true);
 
-    // Generate a custom token
-    const customToken = await firebaseAuth.createCustomToken(user.uid);
-
-    res.status(200).json({ user, token: customToken });
+    res.status(200).json({ token, expires_in, refresh_token: user.refreshToken });
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
@@ -35,14 +55,6 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Sign out (Optional)
-router.post("/signout", async (req, res) => {
-  try {
-    // You can handle sign-out logic here if needed
-    res.status(200).json({ message: "Signed out successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post("/register", async (req, res) => {});
 
 module.exports = router;

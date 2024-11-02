@@ -15,6 +15,7 @@ var ownerRouter = require("./controllers/owner");
 var placeRouter = require("./controllers/place");
 var userRouter = require("./controllers/user");
 var vehicleRouter = require("./controllers/vehicle");
+var registerRouter = require("./controllers/register");
 
 const authentication = require("./middlewares/authentication");
 
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
 
 app.use("/", indexRouter);
 app.use("/v1/auth", authRouter);
+app.use("/v1/register", registerRouter);
 app.use("/v1/assistant-driver", authentication, assistantDriverRouter);
 app.use("/v1/driver", authentication, driverRouter);
 app.use("/v1/handyman", authentication, handymanRouter);
