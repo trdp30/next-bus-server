@@ -40,9 +40,21 @@ const getVehicleById = async vehicleId => {
   }
 };
 
+const getIsValidUpdatePayload = payload => {
+  if (payload && Object.keys(payload).length) {
+    const payloadKeys = Object.keys(payload);
+    const whitelistKeys = ["name", "registration_number", "owner"];
+    return every(payloadKeys, key => includes(whitelistKeys, key));
+  } else {
+    return false;
+  }
+};
+
 // Update a Vehicle
 const updateVehicle = async (vehicleId, updateData) => {
   try {
+    const isValidPayload = getIsValidUpdatePayload(updateData);
+    if (!isValidPayload) throw Error("Invalid Request");
     const vehicle = await Vehicle.findByIdAndUpdate(vehicleId, updateData, {
       new: true,
       runValidators: true,

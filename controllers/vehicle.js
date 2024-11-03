@@ -46,7 +46,7 @@ router.put("/:vehicleId", authOwnerAccess, async (req, res) => {
 // Delete a Vehicle
 router.delete("/:vehicleId", authOwnerAccess, async (req, res) => {
   try {
-    await vehicleService.deleteVehicle(req.params.vehicleId);
+    await vehicleService.deleteVehicle(req?.params?.vehicleId);
     res.status(204).send(); // No content response for successful deletion
   } catch (error) {
     res.status(404).json({ message: error.message });
