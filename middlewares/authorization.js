@@ -63,9 +63,23 @@ const authManagerAccess = async (req, res, next) => {
   }
 };
 
+const authDriverAccess = async (req, res, next) => {
+  try {
+    const decodedToken = req.decodedToken;
+    if (decodedToken && decodedToken.roles && decodedToken.roles.length && includes(decodedToken.roles, roles.driver)) {
+      next();
+    } else {
+      return res.status(401).send({ error: "Authorization denied" });
+    }
+  } catch (error) {
+    res.status(401).send(error);
+  }
+};
+
 module.exports = {
   checkSuperAdminAccess,
   authAdminAccess,
   authOwnerAccess,
   authManagerAccess,
+  authDriverAccess,
 };

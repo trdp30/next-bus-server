@@ -16,6 +16,7 @@ var placeRouter = require("./controllers/place");
 var userRouter = require("./controllers/user");
 var vehicleRouter = require("./controllers/vehicle");
 var registerRouter = require("./controllers/register");
+var trackerRouter = require("./controllers/tracker");
 
 const authentication = require("./middlewares/authentication");
 
@@ -49,6 +50,7 @@ app.use("/v1/owner", authentication, ownerRouter);
 app.use("/v1/place", authentication, placeRouter);
 app.use("/v1/user", authentication, userRouter);
 app.use("/v1/vehicle", authentication, vehicleRouter);
+app.use("/v1/tracker", authentication, trackerRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
