@@ -1,19 +1,22 @@
 const express = require("express");
 const vehicleService = require("../services/vehicle");
+const { authOwnerAccess } = require("../middlewares/authorization");
 
 const router = express.Router();
 
 // Create a Vehicle
-router.post("/", async (req, res) => {
+router.post("/", authOwnerAccess, async (req, res) => {
   try {
-    const newVehicle = await vehicleService.createVehicle(
-      req.body.name,
-      req.body.registration_number,
-      req.body.chassis_number,
-      req.body.engine_number,
-      req.body.created_by,
-      req.body.owner,
-    );
+    const newVehicle = await vehicleService.createVehicle({
+      payload: {
+        name: req?.body?.name,
+        registration_number: req?.body?.registration_number,
+        chassis_number: req?.body?.chassis_number,
+        engine_number: req?.body?.engine_number,
+        created_by: req?.decodedToken?.user_id,
+        owner: req?.body?.owner,
+      },
+    });
     res.status(201).json(newVehicle);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -31,7 +34,7 @@ router.get("/:vehicleId", async (req, res) => {
 });
 
 // Update a Vehicle
-router.put("/:vehicleId", async (req, res) => {
+router.put("/:vehicleId", authOwnerAccess, async (req, res) => {
   try {
     const updatedVehicle = await vehicleService.updateVehicle(req.params.vehicleId, req.body);
     res.status(200).json(updatedVehicle);
@@ -41,7 +44,7 @@ router.put("/:vehicleId", async (req, res) => {
 });
 
 // Delete a Vehicle
-router.delete("/:vehicleId", async (req, res) => {
+router.delete("/:vehicleId", authOwnerAccess, async (req, res) => {
   try {
     await vehicleService.deleteVehicle(req.params.vehicleId);
     res.status(204).send(); // No content response for successful deletion
@@ -53,7 +56,9 @@ router.delete("/:vehicleId", async (req, res) => {
 // Get All Vehicles
 router.get("/", async (req, res) => {
   try {
-    const vehicles = await vehicleService.getAllVehicles();
+    const query = req?.query?.q;
+    const parsedQuery = query && JSON.parse(query);
+    const vehicles = await vehicleService.getAllVehicles(parsedQuery);
     res.status(200).json(vehicles);
   } catch (error) {
     res.status(500).json({ message: error.message });

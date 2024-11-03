@@ -23,12 +23,13 @@ const vehicleSchema = new mongoose.Schema(
       trim: true,
     },
     created_by: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Owner", // This references the 'Owner' model
+      ref: "User", // This references the 'Owner' model
       required: true, // You can choose to make this required or not based on your needs
     },
   },

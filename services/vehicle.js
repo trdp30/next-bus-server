@@ -1,15 +1,24 @@
+const { every, includes } = require("lodash");
 const Vehicle = require("../models/vehicle");
+const { getUserByFBId } = require("./user");
+
+const getIsRecordAlreadyExist = async payload => {
+  const { registration_number, chassis_number, engine_number } = payload;
+  const recordsByRegNo = await Vehicle.find({ registration_number });
+  const recordsByChNo = await Vehicle.find({ chassis_number });
+  const recordsByEngNo = await Vehicle.find({ engine_number });
+  return recordsByRegNo.length + recordsByChNo.length + recordsByEngNo.length > 0;
+};
 
 // Create a Vehicle
-const createVehicle = async (name, registrationNumber, chassisNumber, engineNumber, createdBy, ownerId) => {
+const createVehicle = async ({ payload }) => {
   try {
+    const createdBy = await getUserByFBId(payload?.created_by);
+    const isRecordAlreadyExist = await getIsRecordAlreadyExist(payload);
+    if (isRecordAlreadyExist) throw Error("Record already exist");
     const vehicle = new Vehicle({
-      name,
-      registration_number: registrationNumber,
-      chassis_number: chassisNumber,
-      engine_number: engineNumber,
+      ...payload,
       created_by: createdBy,
-      owner: ownerId,
     });
     await vehicle.save();
     return vehicle;
@@ -61,10 +70,21 @@ const deleteVehicle = async vehicleId => {
   }
 };
 
+const getIsValidQueryParams = query => {
+  if (!query) return true;
+  const queryKeys = Object.keys(query);
+  const whitelistKeys = ["name", "registration_number", "chassis_number", "engine_number", "owner", "created_by"];
+  return every(queryKeys, key => includes(whitelistKeys, key));
+};
+
 // Get All Vehicles
-const getAllVehicles = async () => {
+const getAllVehicles = async query => {
   try {
-    const vehicles = await Vehicle.find().populate("owner");
+    if (!getIsValidQueryParams(query)) {
+      throw Error("Invalid request");
+    }
+    const { page, page_size, ...rest } = query || {};
+    const vehicles = await Vehicle.find(rest).populate("owner");
     return vehicles;
   } catch (error) {
     throw new Error(`Error retrieving vehicles: ${error.message}`);
