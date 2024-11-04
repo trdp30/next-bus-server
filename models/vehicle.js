@@ -32,6 +32,13 @@ const vehicleSchema = new mongoose.Schema(
       ref: "User", // This references the 'Owner' model
       required: true, // You can choose to make this required or not based on your needs
     },
+    drivers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // This references the 'Owner' model
+        required: false, // You can choose to make this required or not based on your needs
+      },
+    ],
   },
   {
     timestamps: true,

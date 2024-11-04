@@ -18,7 +18,7 @@ const getMappedRoles = role => {
     case rolesEnum.handyman.toLowerCase():
       return [rolesEnum.handyman];
     default:
-      return [];
+      return [rolesEnum.consumer];
   }
 };
 

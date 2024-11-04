@@ -33,9 +33,30 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       default: "",
+      trim: true,
     },
     name: {
       type: String,
+      trim: true,
+    },
+    pan: {
+      type: String,
+      trim: true,
+    },
+    address_1: {
+      type: String,
+      trim: true,
+    },
+    address_2: {
+      type: String,
+      trim: true,
+    },
+    location: {
+      type: Object,
+    },
+    driving_license: {
+      type: String,
+      trim: true,
     },
   },
   {

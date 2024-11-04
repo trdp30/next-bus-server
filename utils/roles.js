@@ -5,4 +5,5 @@ module.exports = {
   driver: "DRIVER",
   assistantDriver: "ASSISTANT_DRIVER",
   handyman: "HANDYMAN",
+  consumer: "CONSUMER",
 };

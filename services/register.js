@@ -1,15 +1,8 @@
-const User = require("./user");
+const userService = require("./user");
 
-const registerUser = async payload => {
-  try {
-    const user = await User.getUserByEmail(payload.email);
-    if (user) {
-      throw new Error("User already exists. Please login with your credentials.");
-    }
-    return await User.createUser({ payload });
-  } catch (error) {
-    throw error;
-  }
+const registerUser = async (payload, session) => {
+  const newUser = await userService.createUser({ payload, session });
+  return newUser;
 };
 
 module.exports = {
