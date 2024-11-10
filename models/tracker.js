@@ -15,11 +15,16 @@ const trackerSchema = new mongoose.Schema(
     date: {
       type: Date,
       default: Date.now,
+      required: true,
     },
     trackerLogs: [],
     started_from: {
-      type: Object,
-      default: {},
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Place",
+    },
+    destination: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Place",
     },
   },
   {

@@ -21,7 +21,7 @@ const createTracker = async ({ payload }) => {
     await tracker.save();
     return tracker;
   } catch (error) {
-    throw new Error(`Error creating tracker: ${error.message}`);
+    throw new Error(`${error.message}`);
   }
 };
 
@@ -83,7 +83,7 @@ const deleteTracker = async trackerId => {
 const getIsValidQueryParams = query => {
   if (!query) return true;
   const queryKeys = Object.keys(query);
-  const whitelistKeys = ["driver", "vehicle", "date", "started_from", "id"];
+  const whitelistKeys = ["driver", "vehicle", "date", "started_from", "id", "isFindTracker"];
   return every(queryKeys, key => includes(whitelistKeys, key));
 };
 
@@ -93,8 +93,14 @@ const getAllTrackers = async query => {
     if (!getIsValidQueryParams(query)) {
       throw Error("Invalid request");
     }
-    const { page, page_size, ...rest } = query || {};
-    const trackers = await Tracker.find(rest);
+    const { page, page_size, isFindTracker, ...rest } = query || {};
+    console.log("isFindTracker", isFindTracker);
+    let trackers;
+    if(isFindTracker) {
+      trackers = await Tracker.find(rest).populate("destination").populate("started_from");
+    } else {
+      trackers = await Tracker.find(rest);
+    }
     return trackers;
   } catch (error) {
     throw new Error(`Error retrieving trackers: ${error.message}`);

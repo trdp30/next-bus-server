@@ -8,7 +8,8 @@ const place = new mongoose.Schema(
       trim: true,
     },
     created_by: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     location: {

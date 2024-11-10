@@ -6,7 +6,12 @@ const router = express.Router();
 // Create a Place
 router.post("/", async (req, res) => {
   try {
-    const newPlace = await placeService.createPlace(req.body.name, req.body.createdBy, req.body.location);
+    const payload = {
+      name: req.body.name,
+      created_by: req?.decodedToken?.user_id,
+      location: req.body.location,
+    };
+    const newPlace = await placeService.createPlace(payload);
     res.status(201).json(newPlace);
   } catch (error) {
     res.status(400).json({ message: error.message });

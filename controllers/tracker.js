@@ -1,6 +1,7 @@
 const express = require("express");
 const trackerService = require("../services/tracker");
 const { authDriverAccess, authOwnerAccess } = require("../middlewares/authorization");
+const { getStartOfDay } = require("../utils/dateHelper");
 
 const router = express.Router();
 
@@ -10,11 +11,12 @@ router.post("/", authDriverAccess, async (req, res) => {
     const newTracker = await trackerService.createTracker({
       payload: {
         vehicle: req?.body?.vehicle,
-        date: req?.body?.date,
+        date: req?.body?.date || getStartOfDay(new Date()),
         driver: req?.body?.driver,
         trackerLogs: req?.body?.trackerLogs,
         started_from: req?.body?.started_from,
         created_by: req?.decodedToken?.user_id,
+        destination: req?.body?.destination,
       },
     });
     res.status(201).json(newTracker);
@@ -56,8 +58,8 @@ router.delete("/:trackerId", authOwnerAccess, async (req, res) => {
 // Get All Trackers
 router.get("/", async (req, res) => {
   try {
-    const query = req?.query?.q;
-    const parsedQuery = query && JSON.parse(query);
+    const query = req?.query;
+    const parsedQuery = typeof query === "string" ? JSON.parse(query) : query;
     const trackers = await trackerService.getAllTrackers(parsedQuery);
     res.status(200).json(trackers);
   } catch (error) {

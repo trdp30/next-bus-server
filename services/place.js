@@ -1,11 +1,13 @@
 const Place = require("../models/place");
+const { getUserByFBId } = require("./user");
 
 // Create a Place
-const createPlace = async (name, createdBy, location) => {
+const createPlace = async payload => {
   try {
-    const place = new Place({ name, createdBy, location });
-    await place.save();
-    return place;
+    const createdBy = await getUserByFBId(payload?.created_by);
+    const place = new Place({ ...payload, created_by: createdBy });
+    const res = await place.save();
+    return res;
   } catch (error) {
     throw new Error(`Error creating place: ${error.message}`);
   }
