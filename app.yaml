@@ -1,1 +1,18 @@
-runtime: nodejs18
+runtime: nodejs20
+env_variables:
+  DATABASE_USERNAME: nextBusAdmin
+  DATABASE_PASSWORD: nextBusAdminPassword
+  DATABASE_NAME: next-bus-testing
+  PORT: 8080
+  PRIVATE_KEY_ID: abcb2193e48fb14e40ac49773396d86849e80238
+  PRIVATE_KEY: -----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDVDYgn/gP7pYWr\nxR1Rgn7waCgli4LI7Rlp53IfifE5nJb9jDqNDr9Ynwdpt1urB1AjigPEA8aHzr6c\n39E4ddK2x/elDGZMB4x0eMupaRBLvl30kk3gPA3+TO8rYeLr0NZuBqf4amJFUM+h\nsnpPzC3EUCRzlVReM0Pos3JW/2Z/bSlgnc2uddIVCUDg/AoX+mdCqGW6Hxkq5kno\n9UC332/O02SE7pq/JbQMr35w3JzMmwt1U3Ugby1/nGHFNTPH8pkI8UhM9Xyp+kfa\n4av4mIWvKwtRA92OxpMBvZv/fby7WHOvYzimRXR+nwRC92efAlC66Uyi/z4iw5FB\n7JxZZI2nAgMBAAECggEADskE1bSFUz2eMhiq5I6zmuonhoQQ8xaK6L2AUVuRz8wR\nqY4g8vCjazpfx4m46aE1FCyXbLziDUMfGW4OmbiJzHx5HV+es8dQ5sd4HsQb2zAV\nWrCbre2M/1bz5UB5bnwxD6IUMMfsFPJfqdGIgCi/MKDYmi0gJ9Guz9pnCSmOZjG/\nal2uxSja5ScqFI5h1HP2rvJh9inDX4Y9sil0x/IkBqzZMcJkRgBNdsqklGGQ+356\n1hOwgSTmUlTF1jeFARRT7cpy0TBOl5v+T15P+EcVbkyxb//jl/HVpeouMbRqs5qq\nJmlR3nKfg650ycBD9ACtHleDVccoFZvoarz8QOlKeQKBgQD+LpnKreUWpzPNoOVi\n29o+KX18Pw1FFmkiaFtkpt0MkTe0mvm9XjEn2ISC0Sm8BiJc361CWViWVXESdDpf\n5B9ysqTTRMMWWSEz81n9eSh4Zs5BXFUkcl1n4dDD0dmSyCvDu2o/ijmIWM+RtSkL\nTedJxpH6WsHA3yOQznZcSIJ9+QKBgQDWk5/5FJGMm/+ShZLYn9vYBmyVr6AmSr9q\noXn51gY6llYms+piqF804mVnlQMQOOoM+9RxK3drTLdmc3vwYckpie/3b0Kw8RkS\nwBDFaOpmvgZSYtXE9fl144SkVfkegqGKyW/ZSLH097uJEslbCQarGaHcQDYt/wwL\nWbxmsW7QnwKBgQCtzReDqtwWXUXiuL2gl0vnbV9McaCVOPmyeUDk1eQYD8PTTpSt\nk5Zw9G/HM1YiJt+gOaGy2Hzmbo3eXHL91nJabySdAUuUIGW/rApAc3PkwAcQUh41\nya1sts+U1gy7fPvP3nqL7+ve+zsTGphyDlaz738pfJ03UFx1S3dLKplvoQKBgQDB\ncTDE0kAs7O3IX9b0p5j/9Tqq7zuHiddq/8wA6WuQIbvlBEmHS5cZDAizCulKFKUb\ns2Pf6nmsJ+sm13GiUeWSJyJIhOswrQoXl0MHVQAMQ79bQnLJL58HImeP51nAoa+U\neOj2j8yutS9B8cfI5Cg409DRyKmPaeCn0uxAADGQrQKBgQCOeoEslUD1juuICzaZ\nfdCiUCnet0878BScfiKl5g9mYSISeZWSDGE5/FExadXfUjeCvlG2r0Jzhaso657d\n5Zn7LPMjn05h0P/aCptMKtKsY2mHmPZq3uWWVaTIDoTggipcT7oDUAbyGAio4xU0\nyRNFFexLU63tfR3G14+5eMSm5Q==\n-----END PRIVATE KEY-----\n
+  CLIENT_EMAIL: firebase-adminsdk-bseev@next-bus-67f78.iam.gserviceaccount.com
+  CLIENT_ID: 105273678769300762796
+  AUTH_URI: https://accounts.google.com/o/oauth2/auth
+  TOKEN_URI: https://oauth2.googleapis.com/token
+  AUTH_PROVIDER_X509_CERT_URL: https://www.googleapis.com/oauth2/v1/certs
+  CLIENT_X509_CERT_URL: https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-bseev%40next-bus-67f78.iam.gserviceaccount.com
+  FIREBASE_API_KEY: AIzaSyB9UOLud9wkXZNgQSoKr36j03W4axSq6QI
+  FIREBASE_AUTH_DOMAIN: next-bus-67f78.firebaseapp.com
+  FIREBASE_PROJECT_ID: next-bus-67f78
+  FIREBASE_APP_ID: 1:416876094817:web:dbac8ab5a44ac0656c5120

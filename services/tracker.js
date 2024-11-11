@@ -2,7 +2,7 @@ const { every, includes } = require("lodash");
 const Tracker = require("../models/tracker");
 const { getUserByFBId } = require("./user");
 
-const getIsRecordAlreadyExist = async payload => {
+const getIsRecordAlreadyExist = async (payload) => {
   const { vehicle, date } = payload;
   const records = await Tracker.find({ vehicle, date });
   return records.length > 0;
@@ -13,7 +13,8 @@ const createTracker = async ({ payload }) => {
   try {
     const createdBy = await getUserByFBId(payload?.created_by);
     const isRecordAlreadyExist = await getIsRecordAlreadyExist(payload);
-    if (isRecordAlreadyExist) throw Error("Journey already started for the day.");
+    if (isRecordAlreadyExist)
+      throw Error("Journey already started for the day.");
     const tracker = new Tracker({
       ...payload,
       created_by: createdBy,
@@ -26,7 +27,7 @@ const createTracker = async ({ payload }) => {
 };
 
 // Get Tracker by ID
-const getTrackerById = async trackerId => {
+const getTrackerById = async (trackerId) => {
   try {
     const vehicle = await Tracker.findById(trackerId);
     if (!vehicle) {
@@ -68,7 +69,7 @@ const getTrackerById = async trackerId => {
 // };
 
 // Delete a Tracker
-const deleteTracker = async trackerId => {
+const deleteTracker = async (trackerId) => {
   try {
     const vehicle = await Tracker.findByIdAndDelete(trackerId);
     if (!vehicle) {
@@ -80,15 +81,22 @@ const deleteTracker = async trackerId => {
   }
 };
 
-const getIsValidQueryParams = query => {
+const getIsValidQueryParams = (query) => {
   if (!query) return true;
   const queryKeys = Object.keys(query);
-  const whitelistKeys = ["driver", "vehicle", "date", "started_from", "id", "isFindTracker"];
-  return every(queryKeys, key => includes(whitelistKeys, key));
+  const whitelistKeys = [
+    "driver",
+    "vehicle",
+    "date",
+    "started_from",
+    "id",
+    "isFindTracker",
+  ];
+  return every(queryKeys, (key) => includes(whitelistKeys, key));
 };
 
 // Get All Trackers
-const getAllTrackers = async query => {
+const getAllTrackers = async (query) => {
   try {
     if (!getIsValidQueryParams(query)) {
       throw Error("Invalid request");
@@ -96,8 +104,10 @@ const getAllTrackers = async query => {
     const { page, page_size, isFindTracker, ...rest } = query || {};
     console.log("isFindTracker", isFindTracker);
     let trackers;
-    if(isFindTracker) {
-      trackers = await Tracker.find(rest).populate("destination").populate("started_from");
+    if (isFindTracker) {
+      trackers = await Tracker.find(rest)
+        .populate("destination")
+        .populate("started_from");
     } else {
       trackers = await Tracker.find(rest);
     }

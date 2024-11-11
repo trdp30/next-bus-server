@@ -19,6 +19,9 @@ const assistantDriverSchema = new mongoose.Schema(
   },
 );
 
-const AssistantDriver = mongoose.model("AssistantDriver", assistantDriverSchema);
+const AssistantDriver = mongoose.model(
+  "AssistantDriver",
+  assistantDriverSchema,
+);
 
 module.exports = AssistantDriver;

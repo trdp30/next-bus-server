@@ -6,7 +6,10 @@ const router = express.Router();
 // Create a Driver
 router.post("/", async (req, res) => {
   try {
-    const newDriver = await driverService.createDriver(req.body.user_id, req.body.vehicles);
+    const newDriver = await driverService.createDriver(
+      req.body.user_id,
+      req.body.vehicles,
+    );
     res.status(201).json(newDriver);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -26,7 +29,10 @@ router.get("/:driverId", async (req, res) => {
 // Update a Driver
 router.put("/:driverId", async (req, res) => {
   try {
-    const updatedDriver = await driverService.updateDriver(req.params.driverId, req.body);
+    const updatedDriver = await driverService.updateDriver(
+      req.params.driverId,
+      req.body,
+    );
     res.status(200).json(updatedDriver);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -56,7 +62,9 @@ router.get("/", async (req, res) => {
 // Get Drivers by Vehicle ID
 router.get("/by-vehicle/:vehicleId", async (req, res) => {
   try {
-    const drivers = await driverService.getDriversByVehicleId(req.params.vehicleId);
+    const drivers = await driverService.getDriversByVehicleId(
+      req.params.vehicleId,
+    );
     res.status(200).json(drivers);
   } catch (error) {
     res.status(400).json({ message: error.message });

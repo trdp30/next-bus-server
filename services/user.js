@@ -4,13 +4,24 @@ const User = require("../models/user");
 const rolesEnum = require("../utils/roles");
 const validateRoles = require("../utils/validatedRole");
 
-const getMappedRoles = role => {
+const getMappedRoles = (role) => {
   const parsedRole = (role || "").toLowerCase();
   switch (parsedRole) {
     case rolesEnum.admin.toLowerCase():
-      return [rolesEnum.admin, rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+      return [
+        rolesEnum.admin,
+        rolesEnum.owner,
+        rolesEnum.driver,
+        rolesEnum.assistantDriver,
+        rolesEnum.handyman,
+      ];
     case rolesEnum.owner.toLowerCase():
-      return [rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
+      return [
+        rolesEnum.owner,
+        rolesEnum.driver,
+        rolesEnum.assistantDriver,
+        rolesEnum.handyman,
+      ];
     case rolesEnum.driver.toLowerCase():
       return [rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
     case rolesEnum.assistantDriver.toLowerCase():
@@ -23,7 +34,8 @@ const getMappedRoles = role => {
 };
 
 const createUser = async ({ payload, session }) => {
-  const { email, phone, name, password, organization_id, profile_pic, role } = payload;
+  const { email, phone, name, password, organization_id, profile_pic, role } =
+    payload;
 
   const response = await firebaseAuth.createUser({
     email: email,
@@ -61,22 +73,22 @@ const createUser = async ({ payload, session }) => {
   return model;
 };
 
-const getUserByEmail = async email => {
+const getUserByEmail = async (email) => {
   const model = await User.findOne({ email: email });
   return model;
 };
 
-const getUserById = async userId => {
+const getUserById = async (userId) => {
   const model = await User.findById(userId);
   return model;
 };
 
-const getUserByFBId = async fbUserId => {
+const getUserByFBId = async (fbUserId) => {
   const model = await User.findOne({ uid: fbUserId });
   return model;
 };
 
-const getFirebaseUserById = async uid => {
+const getFirebaseUserById = async (uid) => {
   return firebaseAuth.getUser(uid);
 };
 
@@ -96,11 +108,16 @@ const updateUserRoleById = async ({ userId, payload }) => {
     throw new Error("User not found");
   }
   if (payload.organization_id) {
-    await firebaseAuth.setCustomUserClaims(user.uid, { organization_id: payload.organization_id });
+    await firebaseAuth.setCustomUserClaims(user.uid, {
+      organization_id: payload.organization_id,
+    });
   }
 
   await firebaseAuth.setCustomUserClaims(user.uid, { roles: roles });
-  const model = await User.findOneAndUpdate({ uid: user.uid }, { roles: roles });
+  const model = await User.findOneAndUpdate(
+    { uid: user.uid },
+    { roles: roles },
+  );
   await model.save();
   return await User.findOne({ uid: user.uid });
 };
@@ -120,7 +137,7 @@ const getAllUsers = async () => {
 };
 
 // Delete a User
-const deleteUser = async userId => {
+const deleteUser = async (userId) => {
   try {
     const user = await getUserById(userId);
     if (!user) {

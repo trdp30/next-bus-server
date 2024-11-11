@@ -6,7 +6,10 @@ const router = express.Router();
 // Create a Handyman
 router.post("/", async (req, res) => {
   try {
-    const newHandyman = await handymanService.createHandyman(req.body.user_id, req.body.vehicles);
+    const newHandyman = await handymanService.createHandyman(
+      req.body.user_id,
+      req.body.vehicles,
+    );
     res.status(201).json(newHandyman);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -16,7 +19,9 @@ router.post("/", async (req, res) => {
 // Get Handyman by ID
 router.get("/:handymanId", async (req, res) => {
   try {
-    const handyman = await handymanService.getHandymanById(req.params.handymanId);
+    const handyman = await handymanService.getHandymanById(
+      req.params.handymanId,
+    );
     res.status(200).json(handyman);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -26,7 +31,10 @@ router.get("/:handymanId", async (req, res) => {
 // Update a Handyman
 router.put("/:handymanId", async (req, res) => {
   try {
-    const updatedHandyman = await handymanService.updateHandyman(req.params.handymanId, req.body);
+    const updatedHandyman = await handymanService.updateHandyman(
+      req.params.handymanId,
+      req.body,
+    );
     res.status(200).json(updatedHandyman);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -56,7 +64,9 @@ router.get("/", async (req, res) => {
 // Get Handymen by Vehicle ID
 router.get("/by-vehicle/:vehicleId", async (req, res) => {
   try {
-    const handymen = await handymanService.getHandymenByVehicleId(req.params.vehicleId);
+    const handymen = await handymanService.getHandymenByVehicleId(
+      req.params.vehicleId,
+    );
     res.status(200).json(handymen);
   } catch (error) {
     res.status(400).json({ message: error.message });

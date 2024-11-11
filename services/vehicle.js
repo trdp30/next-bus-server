@@ -2,12 +2,14 @@ const { every, includes } = require("lodash");
 const Vehicle = require("../models/vehicle");
 const { getUserByFBId } = require("./user");
 
-const getIsRecordAlreadyExist = async payload => {
+const getIsRecordAlreadyExist = async (payload) => {
   const { registration_number, chassis_number, engine_number } = payload;
   const recordsByRegNo = await Vehicle.find({ registration_number });
   const recordsByChNo = await Vehicle.find({ chassis_number });
   const recordsByEngNo = await Vehicle.find({ engine_number });
-  return recordsByRegNo.length + recordsByChNo.length + recordsByEngNo.length > 0;
+  return (
+    recordsByRegNo.length + recordsByChNo.length + recordsByEngNo.length > 0
+  );
 };
 
 // Create a Vehicle
@@ -28,7 +30,7 @@ const createVehicle = async ({ payload }) => {
 };
 
 // Get Vehicle by ID
-const getVehicleById = async vehicleId => {
+const getVehicleById = async (vehicleId) => {
   try {
     const vehicle = await Vehicle.findById(vehicleId).populate("owner");
     if (!vehicle) {
@@ -40,11 +42,11 @@ const getVehicleById = async vehicleId => {
   }
 };
 
-const getIsValidUpdatePayload = payload => {
+const getIsValidUpdatePayload = (payload) => {
   if (payload && Object.keys(payload).length) {
     const payloadKeys = Object.keys(payload);
     const whitelistKeys = ["name", "registration_number", "owner"];
-    return every(payloadKeys, key => includes(whitelistKeys, key));
+    return every(payloadKeys, (key) => includes(whitelistKeys, key));
   } else {
     return false;
   }
@@ -70,7 +72,7 @@ const updateVehicle = async (vehicleId, updateData) => {
 };
 
 // Delete a Vehicle
-const deleteVehicle = async vehicleId => {
+const deleteVehicle = async (vehicleId) => {
   try {
     const vehicle = await Vehicle.findByIdAndDelete(vehicleId);
     if (!vehicle) {
@@ -82,15 +84,22 @@ const deleteVehicle = async vehicleId => {
   }
 };
 
-const getIsValidQueryParams = query => {
+const getIsValidQueryParams = (query) => {
   if (!query) return true;
   const queryKeys = Object.keys(query);
-  const whitelistKeys = ["name", "registration_number", "chassis_number", "engine_number", "owner", "created_by"];
-  return every(queryKeys, key => includes(whitelistKeys, key));
+  const whitelistKeys = [
+    "name",
+    "registration_number",
+    "chassis_number",
+    "engine_number",
+    "owner",
+    "created_by",
+  ];
+  return every(queryKeys, (key) => includes(whitelistKeys, key));
 };
 
 // Get All Vehicles
-const getAllVehicles = async query => {
+const getAllVehicles = async (query) => {
   try {
     if (!getIsValidQueryParams(query)) {
       throw Error("Invalid request");
@@ -104,7 +113,7 @@ const getAllVehicles = async query => {
 };
 
 // Get Vehicles by Owner ID
-const getVehiclesByOwnerId = async ownerId => {
+const getVehiclesByOwnerId = async (ownerId) => {
   try {
     const vehicles = await Vehicle.find({ owner: ownerId }).populate("owner");
     return vehicles;

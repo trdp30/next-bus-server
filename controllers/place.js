@@ -31,7 +31,10 @@ router.get("/:placeId", async (req, res) => {
 // Update a Place
 router.put("/:placeId", async (req, res) => {
   try {
-    const updatedPlace = await placeService.updatePlace(req.params.placeId, req.body);
+    const updatedPlace = await placeService.updatePlace(
+      req.params.placeId,
+      req.body,
+    );
     res.status(200).json(updatedPlace);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -29,11 +29,18 @@ const router = express.Router();
 router.post("/token", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userCredential = await signInWithEmailAndPassword(firebaseClientAuth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      firebaseClientAuth,
+      email,
+      password,
+    );
     const user = userCredential.user;
-    const { token, expirationTime: expires_in } = await user.getIdTokenResult(true);
+    const { token, expirationTime: expires_in } =
+      await user.getIdTokenResult(true);
 
-    res.status(200).json({ token, expires_in, refresh_token: user.refreshToken });
+    res
+      .status(200)
+      .json({ token, expires_in, refresh_token: user.refreshToken });
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
@@ -43,7 +50,10 @@ router.post("/token", async (req, res) => {
 router.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userCredential = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+    const userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+      email,
+      password,
+    );
     const user = userCredential.user;
 
     // Generate a custom token

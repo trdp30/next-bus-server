@@ -1,6 +1,9 @@
 const express = require("express");
 const trackerService = require("../services/tracker");
-const { authDriverAccess, authOwnerAccess } = require("../middlewares/authorization");
+const {
+  authDriverAccess,
+  authOwnerAccess,
+} = require("../middlewares/authorization");
 const { getStartOfDay } = require("../utils/dateHelper");
 
 const router = express.Router();
@@ -70,7 +73,10 @@ router.get("/", async (req, res) => {
 // Update a Tracker Log
 router.put("/log/:trackerId", async (req, res) => {
   try {
-    const tracker = await trackerService.addTrackerLog(req?.params?.trackerId, req?.body);
+    const tracker = await trackerService.addTrackerLog(
+      req?.params?.trackerId,
+      req?.body,
+    );
     res.status(200).json(tracker);
   } catch (error) {
     res.status(400).json({ message: error.message });

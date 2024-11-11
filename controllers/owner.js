@@ -6,7 +6,11 @@ const router = express.Router();
 // Create an Owner
 router.post("/", async (req, res) => {
   try {
-    const newOwner = await ownerService.createOwner(req.body.user_id, req.body.vehicles, req.body.location);
+    const newOwner = await ownerService.createOwner(
+      req.body.user_id,
+      req.body.vehicles,
+      req.body.location,
+    );
     res.status(201).json(newOwner);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -26,7 +30,10 @@ router.get("/:ownerId", async (req, res) => {
 // Update an Owner
 router.put("/:ownerId", async (req, res) => {
   try {
-    const updatedOwner = await ownerService.updateOwner(req.params.ownerId, req.body);
+    const updatedOwner = await ownerService.updateOwner(
+      req.params.ownerId,
+      req.body,
+    );
     res.status(200).json(updatedOwner);
   } catch (error) {
     res.status(400).json({ message: error.message });

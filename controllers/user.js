@@ -1,7 +1,10 @@
 const express = require("express");
 const userService = require("../services/user");
 const router = express.Router();
-const { checkSuperAdminAccess, authAdminAccess } = require("../middlewares/authorization");
+const {
+  checkSuperAdminAccess,
+  authAdminAccess,
+} = require("../middlewares/authorization");
 
 // Get Firebase User by ID
 router.get("/firebase-user/:uid", checkSuperAdminAccess, async (req, res) => {
@@ -56,7 +59,9 @@ router.post("/", authAdminAccess, async (req, res) => {
 // Get current user by idToken's user_id
 router.get("/me", async (req, res) => {
   try {
-    const currentUser = await userService.getUserByFBId(req?.decodedToken?.user_id);
+    const currentUser = await userService.getUserByFBId(
+      req?.decodedToken?.user_id,
+    );
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -76,7 +81,10 @@ router.get("/:userId", authAdminAccess, async (req, res) => {
 // Update role of User
 router.put("/update-role/:id", checkSuperAdminAccess, async (req, res) => {
   try {
-    const updatedUser = await userService.updateUserRoleById({ userId: req.params.id, payload: req.body });
+    const updatedUser = await userService.updateUserRoleById({
+      userId: req.params.id,
+      payload: req.body,
+    });
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -86,7 +94,10 @@ router.put("/update-role/:id", checkSuperAdminAccess, async (req, res) => {
 // Update a User
 router.put("/:userId", authAdminAccess, async (req, res) => {
   try {
-    const updatedUser = await userService.updateUser(req.params.userId, req.body);
+    const updatedUser = await userService.updateUser(
+      req.params.userId,
+      req.body,
+    );
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(400).json({ message: error.message });

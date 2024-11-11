@@ -12,7 +12,7 @@ const createDriver = async (userId, vehicles = []) => {
 };
 
 // Get Driver by ID
-const getDriverById = async driverId => {
+const getDriverById = async (driverId) => {
   try {
     const driver = await Driver.findById(driverId).populate("vehicles");
     if (!driver) {
@@ -42,7 +42,7 @@ const updateDriver = async (driverId, updateData) => {
 };
 
 // Delete a Driver
-const deleteDriver = async driverId => {
+const deleteDriver = async (driverId) => {
   try {
     const driver = await Driver.findByIdAndDelete(driverId);
     if (!driver) {
@@ -65,9 +65,11 @@ const getAllDrivers = async () => {
 };
 
 // Get Drivers by Vehicle ID
-const getDriversByVehicleId = async vehicleId => {
+const getDriversByVehicleId = async (vehicleId) => {
   try {
-    const drivers = await Driver.find({ vehicles: vehicleId }).populate("vehicles");
+    const drivers = await Driver.find({ vehicles: vehicleId }).populate(
+      "vehicles",
+    );
     return drivers;
   } catch (error) {
     throw new Error(`Error retrieving drivers by vehicle: ${error.message}`);

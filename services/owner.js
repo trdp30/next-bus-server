@@ -12,7 +12,7 @@ const createOwner = async (userId, vehicles = [], location) => {
 };
 
 // Get Owner by ID
-const getOwnerById = async ownerId => {
+const getOwnerById = async (ownerId) => {
   try {
     const owner = await Owner.findById(ownerId).populate("vehicles");
     if (!owner) {
@@ -42,7 +42,7 @@ const updateOwner = async (ownerId, updateData) => {
 };
 
 // Delete an Owner
-const deleteOwner = async ownerId => {
+const deleteOwner = async (ownerId) => {
   try {
     const owner = await Owner.findByIdAndDelete(ownerId);
     if (!owner) {
@@ -65,7 +65,7 @@ const getAllOwners = async () => {
 };
 
 // Get Owners by Location (Example)
-const getOwnersByLocation = async location => {
+const getOwnersByLocation = async (location) => {
   try {
     const owners = await Owner.find({ location }).populate("vehicles");
     return owners;

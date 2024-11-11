@@ -2,7 +2,7 @@ const Place = require("../models/place");
 const { getUserByFBId } = require("./user");
 
 // Create a Place
-const createPlace = async payload => {
+const createPlace = async (payload) => {
   try {
     const createdBy = await getUserByFBId(payload?.created_by);
     const place = new Place({ ...payload, created_by: createdBy });
@@ -14,7 +14,7 @@ const createPlace = async payload => {
 };
 
 // Get Place by ID
-const getPlaceById = async placeId => {
+const getPlaceById = async (placeId) => {
   try {
     const place = await Place.findById(placeId);
     if (!place) {
@@ -44,7 +44,7 @@ const updatePlace = async (placeId, updateData) => {
 };
 
 // Delete a Place
-const deletePlace = async placeId => {
+const deletePlace = async (placeId) => {
   try {
     const place = await Place.findByIdAndDelete(placeId);
     if (!place) {
@@ -67,7 +67,7 @@ const getAllPlaces = async () => {
 };
 
 // Get Places by Location (Example using GeoJSON)
-const getPlacesByLocation = async location => {
+const getPlacesByLocation = async (location) => {
   try {
     // Assuming location is a GeoJSON Point object
     const places = await Place.find({

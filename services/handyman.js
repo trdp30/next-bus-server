@@ -12,7 +12,7 @@ const createHandyman = async (userId, vehicles = []) => {
 };
 
 // Get Handyman by ID
-const getHandymanById = async handymanId => {
+const getHandymanById = async (handymanId) => {
   try {
     const handyman = await Handyman.findById(handymanId).populate("vehicles");
     if (!handyman) {
@@ -42,7 +42,7 @@ const updateHandyman = async (handymanId, updateData) => {
 };
 
 // Delete a Handyman
-const deleteHandyman = async handymanId => {
+const deleteHandyman = async (handymanId) => {
   try {
     const handyman = await Handyman.findByIdAndDelete(handymanId);
     if (!handyman) {
@@ -65,9 +65,11 @@ const getAllHandymen = async () => {
 };
 
 // Get Handymen by Vehicle ID
-const getHandymenByVehicleId = async vehicleId => {
+const getHandymenByVehicleId = async (vehicleId) => {
   try {
-    const handymen = await Handyman.find({ vehicles: vehicleId }).populate("vehicles");
+    const handymen = await Handyman.find({ vehicles: vehicleId }).populate(
+      "vehicles",
+    );
     return handymen;
   } catch (error) {
     throw new Error(`Error retrieving handymen by vehicle: ${error.message}`);

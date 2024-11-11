@@ -36,7 +36,10 @@ router.get("/:vehicleId", async (req, res) => {
 // Update a Vehicle
 router.put("/:vehicleId", authOwnerAccess, async (req, res) => {
   try {
-    const updatedVehicle = await vehicleService.updateVehicle(req.params.vehicleId, req.body);
+    const updatedVehicle = await vehicleService.updateVehicle(
+      req.params.vehicleId,
+      req.body,
+    );
     res.status(200).json(updatedVehicle);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -68,7 +71,9 @@ router.get("/", async (req, res) => {
 // Get Vehicles by Owner ID
 router.get("/by-owner/:ownerId", async (req, res) => {
   try {
-    const vehicles = await vehicleService.getVehiclesByOwnerId(req.params.ownerId);
+    const vehicles = await vehicleService.getVehiclesByOwnerId(
+      req.params.ownerId,
+    );
     res.status(200).json(vehicles);
   } catch (error) {
     res.status(400).json({ message: error.message });

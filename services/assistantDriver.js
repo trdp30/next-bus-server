@@ -12,9 +12,10 @@ const createAssistantDriver = async (userId, vehicles = []) => {
 };
 
 // Get Assistant Driver by ID
-const getAssistantDriverById = async assistantDriverId => {
+const getAssistantDriverById = async (assistantDriverId) => {
   try {
-    const assistantDriver = await AssistantDriver.findById(assistantDriverId).populate("vehicles");
+    const assistantDriver =
+      await AssistantDriver.findById(assistantDriverId).populate("vehicles");
     if (!assistantDriver) {
       throw new Error("Assistant driver not found");
     }
@@ -27,10 +28,14 @@ const getAssistantDriverById = async assistantDriverId => {
 // Update an Assistant Driver
 const updateAssistantDriver = async (assistantDriverId, updateData) => {
   try {
-    const assistantDriver = await AssistantDriver.findByIdAndUpdate(assistantDriverId, updateData, {
-      new: true,
-      runValidators: true,
-    }).populate("vehicles");
+    const assistantDriver = await AssistantDriver.findByIdAndUpdate(
+      assistantDriverId,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).populate("vehicles");
 
     if (!assistantDriver) {
       throw new Error("Assistant driver not found");
@@ -42,9 +47,10 @@ const updateAssistantDriver = async (assistantDriverId, updateData) => {
 };
 
 // Delete an Assistant Driver
-const deleteAssistantDriver = async assistantDriverId => {
+const deleteAssistantDriver = async (assistantDriverId) => {
   try {
-    const assistantDriver = await AssistantDriver.findByIdAndDelete(assistantDriverId);
+    const assistantDriver =
+      await AssistantDriver.findByIdAndDelete(assistantDriverId);
     if (!assistantDriver) {
       throw new Error("Assistant driver not found");
     }
@@ -65,12 +71,16 @@ const getAllAssistantDrivers = async () => {
 };
 
 // Get Assistant Drivers by Vehicle ID
-const getAssistantDriversByVehicleId = async vehicleId => {
+const getAssistantDriversByVehicleId = async (vehicleId) => {
   try {
-    const assistantDrivers = await AssistantDriver.find({ vehicles: vehicleId }).populate("vehicles");
+    const assistantDrivers = await AssistantDriver.find({
+      vehicles: vehicleId,
+    }).populate("vehicles");
     return assistantDrivers;
   } catch (error) {
-    throw new Error(`Error retrieving assistant drivers by vehicle: ${error.message}`);
+    throw new Error(
+      `Error retrieving assistant drivers by vehicle: ${error.message}`,
+    );
   }
 };
 
