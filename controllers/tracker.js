@@ -4,7 +4,6 @@ const {
   authDriverAccess,
   authOwnerAccess,
 } = require("../middlewares/authorization");
-const { getStartOfDay } = require("../utils/dateHelper");
 
 const router = express.Router();
 
@@ -14,7 +13,7 @@ router.post("/", authDriverAccess, async (req, res) => {
     const newTracker = await trackerService.createTracker({
       payload: {
         vehicle: req?.body?.vehicle,
-        date: req?.body?.date || getStartOfDay(new Date()),
+        date: req?.body?.date,
         driver: req?.body?.driver,
         trackerLogs: req?.body?.trackerLogs,
         started_from: req?.body?.started_from,
