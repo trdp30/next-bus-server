@@ -109,7 +109,7 @@ const getAllTrackers = async (query) => {
         .populate("destination")
         .populate("started_from");
     } else {
-      trackers = await Tracker.find(rest);
+      trackers = await Tracker.find(rest).populate("driver").populate("vehicle");
     }
     return trackers;
   } catch (error) {
