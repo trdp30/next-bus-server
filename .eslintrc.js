@@ -31,5 +31,6 @@ module.exports = {
         SwitchCase: 1,
       },
     ],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
   },
 };

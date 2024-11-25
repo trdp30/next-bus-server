@@ -101,7 +101,7 @@ const getAllTrackers = async (query) => {
     if (!getIsValidQueryParams(query)) {
       throw Error("Invalid request");
     }
-    const { page, page_size, isFindTracker, ...rest } = query || {};
+    const { page: _page, page_size: _page_size, isFindTracker, ...rest } = query || {};
     console.log("isFindTracker", isFindTracker);
     let trackers;
     if (isFindTracker) {
