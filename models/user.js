@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     organization_id: {
       type: String,
       required: false,
+      default: "1",
     },
     profile_pic: {
       type: String,

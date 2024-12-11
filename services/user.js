@@ -4,24 +4,13 @@ const User = require("../models/user");
 const rolesEnum = require("../utils/roles");
 const validateRoles = require("../utils/validatedRole");
 
-const getMappedRoles = (role) => {
+const getMappedRoles = role => {
   const parsedRole = (role || "").toLowerCase();
   switch (parsedRole) {
     case rolesEnum.admin.toLowerCase():
-      return [
-        rolesEnum.admin,
-        rolesEnum.owner,
-        rolesEnum.driver,
-        rolesEnum.assistantDriver,
-        rolesEnum.handyman,
-      ];
+      return [rolesEnum.admin, rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
     case rolesEnum.owner.toLowerCase():
-      return [
-        rolesEnum.owner,
-        rolesEnum.driver,
-        rolesEnum.assistantDriver,
-        rolesEnum.handyman,
-      ];
+      return [rolesEnum.owner, rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
     case rolesEnum.driver.toLowerCase():
       return [rolesEnum.driver, rolesEnum.assistantDriver, rolesEnum.handyman];
     case rolesEnum.assistantDriver.toLowerCase():
@@ -33,15 +22,23 @@ const getMappedRoles = (role) => {
   }
 };
 
+function generateRandomPassword(length = 8) {
+  const digits = "0123456789";
+  let otp = "";
+  for (let i = 0; i < length; i++) {
+    otp += digits[Math.floor(Math.random() * digits.length)];
+  }
+  return otp;
+}
+
 const createUser = async ({ payload, session }) => {
-  const { email, phone, name, password, organization_id, profile_pic, role } =
-    payload;
+  const { email, phone, name, password, organization_id, profile_pic, role } = payload;
 
   const response = await firebaseAuth.createUser({
     email: email,
     emailVerified: false,
     // phoneNumber: (phone || "").toString(),
-    password: password,
+    password: password || generateRandomPassword(),
     displayName: name,
     // photoURL: profile_pic || null,
     disabled: false,
@@ -73,22 +70,22 @@ const createUser = async ({ payload, session }) => {
   return model;
 };
 
-const getUserByEmail = async (email) => {
+const getUserByEmail = async email => {
   const model = await User.findOne({ email: email });
   return model;
 };
 
-const getUserById = async (userId) => {
+const getUserById = async userId => {
   const model = await User.findById(userId);
   return model;
 };
 
-const getUserByFBId = async (fbUserId) => {
+const getUserByFBId = async fbUserId => {
   const model = await User.findOne({ uid: fbUserId });
   return model;
 };
 
-const getFirebaseUserById = async (uid) => {
+const getFirebaseUserById = async uid => {
   return firebaseAuth.getUser(uid);
 };
 
@@ -114,10 +111,7 @@ const updateUserRoleById = async ({ userId, payload }) => {
   }
 
   await firebaseAuth.setCustomUserClaims(user.uid, { roles: roles });
-  const model = await User.findOneAndUpdate(
-    { uid: user.uid },
-    { roles: roles },
-  );
+  const model = await User.findOneAndUpdate({ uid: user.uid }, { roles: roles });
   await model.save();
   return await User.findOne({ uid: user.uid });
 };
@@ -137,7 +131,7 @@ const getAllUsers = async () => {
 };
 
 // Delete a User
-const deleteUser = async (userId) => {
+const deleteUser = async userId => {
   try {
     const user = await getUserById(userId);
     if (!user) {
@@ -187,6 +181,47 @@ const updateUser = async (userId, updateData) => {
   }
 };
 
+const registerUser = async ({ payload, session }) => {
+  const { email, phone, name, password, organization_id, profile_pic, role } = payload;
+
+  const fbPayload = {
+    emailVerified: false,
+    // phoneNumber: (phone || "").toString(),
+    password: password || generateRandomPassword(),
+    // displayName: name,
+    // photoURL: profile_pic || null,
+    disabled: false,
+  };
+
+  const response = await firebaseAuth.updateUser(session.uid, fbPayload);
+
+  const roles = getMappedRoles(role);
+  // const roles = Object.keys(rolesEnum)
+  //   .map(k => rolesEnum[k])
+  //   .concat("SUPER_ADMIN");
+
+  await firebaseAuth.setCustomUserClaims(session.uid, {
+    roles: roles,
+    organization_id: 1,
+  });
+
+  const newUser = new User({
+    email,
+    organization_id,
+    profile_pic,
+    uid: response.uid,
+    roles: roles,
+    created_by: session?.uid || "self",
+    phone: (phone || "").toString(),
+    name,
+  });
+
+  const model = await newUser.save();
+  const customToken = await firebaseAuth.createCustomToken(response.uid);
+
+  return { data: model, customToken };
+};
+
 module.exports = {
   createUser,
   getUserById,
@@ -199,4 +234,5 @@ module.exports = {
   getFirebaseUserById,
   getUserByEmail,
   getUserByFBId,
+  registerUser,
 };

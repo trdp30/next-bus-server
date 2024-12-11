@@ -1,10 +1,7 @@
 const express = require("express");
 const userService = require("../services/user");
 const router = express.Router();
-const {
-  checkSuperAdminAccess,
-  authAdminAccess,
-} = require("../middlewares/authorization");
+const { checkSuperAdminAccess, authAdminAccess } = require("../middlewares/authorization");
 
 // Get Firebase User by ID
 router.get("/firebase-user/:uid", checkSuperAdminAccess, async (req, res) => {
@@ -56,12 +53,30 @@ router.post("/", authAdminAccess, async (req, res) => {
   }
 });
 
+// Register a User
+router.post("/register", async (req, res) => {
+  try {
+    const payload = {
+      email: req.body.email,
+      phone: req.body.phone,
+      name: req.body.name,
+      password: req.body.password,
+      organization_id: req.body.organization_id,
+      role: req.body.role,
+    };
+    const session = req.decodedToken;
+    const newUser = await userService.registerUser({ payload, session });
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 // Get current user by idToken's user_id
 router.get("/me", async (req, res) => {
   try {
-    const currentUser = await userService.getUserByFBId(
-      req?.decodedToken?.user_id,
-    );
+    console.log("req?.decodedToken", req?.decodedToken);
+    const currentUser = await userService.getUserByFBId(req?.decodedToken?.user_id);
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -94,10 +109,7 @@ router.put("/update-role/:id", checkSuperAdminAccess, async (req, res) => {
 // Update a User
 router.put("/:userId", authAdminAccess, async (req, res) => {
   try {
-    const updatedUser = await userService.updateUser(
-      req.params.userId,
-      req.body,
-    );
+    const updatedUser = await userService.updateUser(req.params.userId, req.body);
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
