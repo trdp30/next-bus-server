@@ -26,6 +26,10 @@ const trackerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Place",
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

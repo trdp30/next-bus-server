@@ -4,17 +4,20 @@ const { getUserByFBId } = require("./user");
 
 const getIsRecordAlreadyExist = async (payload) => {
   const { vehicle, date } = payload;
-  const records = await Tracker.find({ vehicle, date });
-  return records.length > 0;
+  return Tracker.find({ vehicle, date });
 };
 
 // Create a Tracker
 const createTracker = async ({ payload }) => {
   try {
     const createdBy = await getUserByFBId(payload?.created_by);
-    const isRecordAlreadyExist = await getIsRecordAlreadyExist(payload);
-    if (isRecordAlreadyExist)
-      throw Error("Journey already started for the day.");
+    const alreadyExistRecords = await getIsRecordAlreadyExist(payload);
+    if (alreadyExistRecords.length > 0) {
+      return {
+        message: "Journey already started for the day.",
+        existingTracker: alreadyExistRecords,
+      };
+    }
     const tracker = new Tracker({
       ...payload,
       created_by: createdBy,
@@ -39,34 +42,34 @@ const getTrackerById = async (trackerId) => {
   }
 };
 
-// const getIsValidUpdatePayload = payload => {
-//   if (payload && Object.keys(payload).length) {
-//     const payloadKeys = Object.keys(payload);
-//     const whitelistKeys = ["name", "registration_number", "owner"];
-//     return every(payloadKeys, key => includes(whitelistKeys, key));
-//   } else {
-//     return false;
-//   }
-// };
+const getIsValidUpdatePayload = payload => {
+  if (payload && Object.keys(payload).length) {
+    const payloadKeys = Object.keys(payload);
+    const whitelistKeys = ["_id", "active",];
+    return every(payloadKeys, key => includes(whitelistKeys, key));
+  } else {
+    return false;
+  }
+};
 
 // Update a Tracker
-// const updateTracker = async (vehicleId, updateData) => {
-//   try {
-//     const isValidPayload = getIsValidUpdatePayload(updateData);
-//     if (!isValidPayload) throw Error("Invalid Request");
-//     const vehicle = await Tracker.findByIdAndUpdate(vehicleId, updateData, {
-//       new: true,
-//       runValidators: true,
-//     }).populate("owner");
+const updateTracker = async (trackerId, updateData) => {
+  try {
+    const isValidPayload = getIsValidUpdatePayload(updateData);
+    if (!isValidPayload) throw Error("Invalid Request");
+    const vehicle = await Tracker.findByIdAndUpdate(trackerId, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
-//     if (!vehicle) {
-//       throw new Error("Tracker not found");
-//     }
-//     return vehicle;
-//   } catch (error) {
-//     throw new Error(`Error updating vehicle: ${error.message}`);
-//   }
-// };
+    if (!vehicle) {
+      throw new Error("Tracker not found");
+    }
+    return vehicle;
+  } catch (error) {
+    throw new Error(`Error updating vehicle: ${error.message}`);
+  }
+};
 
 // Delete a Tracker
 const deleteTracker = async (trackerId) => {
@@ -91,6 +94,7 @@ const getIsValidQueryParams = (query) => {
     "started_from",
     "id",
     "isFindTracker",
+    "active"
   ];
   return every(queryKeys, (key) => includes(whitelistKeys, key));
 };
@@ -157,4 +161,5 @@ module.exports = {
   deleteTracker,
   getAllTrackers,
   addTrackerLog,
+  updateTracker
 };

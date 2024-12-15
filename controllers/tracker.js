@@ -19,6 +19,7 @@ router.post("/", authDriverAccess, async (req, res) => {
         started_from: req?.body?.started_from,
         created_by: req?.decodedToken?.user_id,
         destination: req?.body?.destination,
+        active: req?.body?.active,
       },
     });
     res.status(201).json(newTracker);
@@ -38,14 +39,14 @@ router.get("/:trackerId", async (req, res) => {
 });
 
 // Update a Tracker
-// router.put("/:trackerId", authDriverAccess, async (req, res) => {
-//   try {
-//     const updatedTracker = await trackerService.updateTracker(req.params.trackerId, req.body);
-//     res.status(200).json(updatedTracker);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// });
+router.put("/:trackerId", authDriverAccess, async (req, res) => {
+  try {
+    const updatedTracker = await trackerService.updateTracker(req.params.trackerId, req.body);
+    res.status(200).json(updatedTracker);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // Delete a Tracker
 router.delete("/:trackerId", authOwnerAccess, async (req, res) => {
