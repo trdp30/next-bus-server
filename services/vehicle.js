@@ -1,6 +1,7 @@
 const { every, includes } = require("lodash");
 const Vehicle = require("../models/vehicle");
 const { getUserByFBId } = require("./user");
+const { Types } = require("mongoose");
 
 const getIsRecordAlreadyExist = async (payload) => {
   const { registration_number, chassis_number, engine_number } = payload;
@@ -94,6 +95,7 @@ const getIsValidQueryParams = (query) => {
     "engine_number",
     "owner",
     "created_by",
+    "vehicleIds"
   ];
   return every(queryKeys, (key) => includes(whitelistKeys, key));
 };
@@ -105,8 +107,11 @@ const getAllVehicles = async (query) => {
       throw Error("Invalid request");
     }
     const { page, page_size, ...rest } = query || {};
-    const vehicles = await Vehicle.find(rest).populate("owner");
-    return vehicles;
+    if(rest.vehicleIds) {
+      rest._id = { $in: rest.vehicleIds.split(",").map(id => new Types.ObjectId(id)) };
+      delete rest.vehicleIds;
+    }
+    return await Vehicle.find(rest);
   } catch (error) {
     throw new Error(`Error retrieving vehicles: ${error.message}`);
   }

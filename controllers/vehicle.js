@@ -59,8 +59,8 @@ router.delete("/:vehicleId", authOwnerAccess, async (req, res) => {
 // Get All Vehicles
 router.get("/", async (req, res) => {
   try {
-    const query = req?.query?.q;
-    const parsedQuery = query && JSON.parse(query);
+    const query = req?.query;
+    const parsedQuery = typeof query === "string" ? JSON.parse(query) : query;
     const vehicles = await vehicleService.getAllVehicles(parsedQuery);
     res.status(200).json(vehicles);
   } catch (error) {

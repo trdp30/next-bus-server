@@ -106,16 +106,7 @@ const getAllTrackers = async (query) => {
       throw Error("Invalid request");
     }
     const { page: _page, page_size: _page_size, isFindTracker, ...rest } = query || {};
-    console.log("isFindTracker", isFindTracker);
-    let trackers;
-    if (isFindTracker) {
-      trackers = await Tracker.find(rest)
-        .populate("destination")
-        .populate("started_from");
-    } else {
-      trackers = await Tracker.find(rest).populate("driver").populate("vehicle");
-    }
-    return trackers;
+    return await Tracker.find(rest);
   } catch (error) {
     throw new Error(`Error retrieving trackers: ${error.message}`);
   }
