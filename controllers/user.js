@@ -75,7 +75,7 @@ router.post("/register", async (req, res) => {
 // Get current user by idToken's user_id
 router.get("/me", async (req, res) => {
   try {
-    console.log("req?.decodedToken", req?.decodedToken);
+    // console.log("req?.decodedToken", req?.decodedToken);
     const currentUser = await userService.getUserByFBId(req?.decodedToken?.user_id);
     res.status(200).json(currentUser);
   } catch (error) {
